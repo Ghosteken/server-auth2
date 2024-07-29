@@ -2,13 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const cors = require('cors');
-
-
+const User = require('./models/userModels')
+const jwt = require ('jsonwebtoken')
 
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://')
+mongoose.connect('mongodb+srv://nicholass:VsZmA8XZiKezaeY@cluster0.w1ysuvl.mongodb.net/')
 
 
 app.post('/api/register', async (req, res) => {
@@ -28,19 +28,21 @@ app.post('/api/register', async (req, res) => {
 });
 
 
-app.post('/api/login', async (req, res) => {
+app.get('/api/quote', async (req, res) => {
 
-    const user = await User.findOne({
-        email: req.body.email,
-        password: req.body.password,
-    })
+    const token  = req.headers['x-access-token']
+    try{
+    const decoded = jwt.verify(token,'secret123')
+    const email = decoded.email
+    const user = await User.findOne({email:email})
 
-    if (user) {
-        res.json({ status: 'ok' }); // This sends the JSON response correctly
-    } else {
-        res.json({ status: 'error', error: 'User not found' }); // This sends the JSON response correctly
-    }
-})
+        return {status:'ok', quote:user.quote}
+    }catch(error){
+        console.log(error)
+        res.json({status:'error', error:'invalid token'})
+    }    
+     })
 
+    
 
-app.listen(5000, () => console.log(`Example app listening on port 5000`));
+app.listen(1337, () => console.log(`Example app listening on port 1337`));
