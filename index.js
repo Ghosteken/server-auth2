@@ -21,10 +21,10 @@ app.post('/api/register', async (req, res) => {
             email: req.body.email,
             password: newPassword,
         })
-        res.json({ status: 'ok' }); // This sends the JSON response correctly
+        res.json({ status: 'ok' }); 
     } catch (error) {
         console.log(error)
-        res.json({ status: 'error', error: 'Duplicates are found' }); // This sends the JSON response correctly    
+        res.json({ status: 'error', error: 'Duplicates are found' });     
     }
 
 });
